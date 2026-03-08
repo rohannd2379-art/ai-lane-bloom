@@ -70,6 +70,7 @@ export type Database = {
           category: string | null
           created_at: string
           description: string | null
+          due_date: string | null
           id: string
           position: number
           status: string
@@ -81,6 +82,7 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          due_date?: string | null
           id?: string
           position?: number
           status?: string
@@ -92,6 +94,7 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          due_date?: string | null
           id?: string
           position?: number
           status?: string
