@@ -88,5 +88,5 @@ export function useTasks(userId: string | undefined) {
     }
   };
 
-  return { tasks, setTasks, loading, addTask, updateTaskStatus, updateTaskPosition, deleteTask, refetch: fetchTasks };
+  return { tasks, setTasks, loading, addTask, updateTask, updateTaskStatus, updateTaskPosition, deleteTask, refetch: fetchTasks };
 }
