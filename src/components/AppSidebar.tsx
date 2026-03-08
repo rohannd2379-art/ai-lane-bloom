@@ -1,5 +1,7 @@
-import { LayoutDashboard, LogOut, MessageSquare, Settings } from "lucide-react";
+import { LayoutDashboard, LogOut, MessageSquare } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface AppSidebarProps {
   onToggleChat: () => void;
@@ -8,10 +10,17 @@ interface AppSidebarProps {
 
 const AppSidebar = ({ onToggleChat, chatOpen }: AppSidebarProps) => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const initials = user?.user_metadata?.display_name
     ? user.user_metadata.display_name.slice(0, 2).toUpperCase()
     : user?.email?.slice(0, 2).toUpperCase() || "U";
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("Signed out successfully");
+    navigate("/auth");
+  };
 
   return (
     <div className="w-[72px] h-screen bg-sidebar flex flex-col items-center py-6 gap-2 shrink-0">
@@ -21,7 +30,14 @@ const AppSidebar = ({ onToggleChat, chatOpen }: AppSidebarProps) => {
       </div>
 
       {/* Nav items */}
-      <NavItem icon={LayoutDashboard} label="Board" active />
+      <NavItem
+        icon={LayoutDashboard}
+        label="Board"
+        active={!chatOpen}
+        onClick={() => {
+          if (chatOpen) onToggleChat();
+        }}
+      />
       <NavItem
         icon={MessageSquare}
         label="AI Chat"
@@ -33,7 +49,7 @@ const AppSidebar = ({ onToggleChat, chatOpen }: AppSidebarProps) => {
 
       {/* Sign out */}
       <button
-        onClick={signOut}
+        onClick={handleSignOut}
         className="w-11 h-11 rounded-xl flex items-center justify-center text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
         title="Sign out"
       >
@@ -63,7 +79,7 @@ function NavItem({
     <button
       onClick={onClick}
       title={label}
-      className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
+      className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
         active
           ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-lg"
           : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent"
