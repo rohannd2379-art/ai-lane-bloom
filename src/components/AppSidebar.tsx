@@ -31,14 +31,6 @@ const AppSidebar = ({ onToggleChat, chatOpen }: AppSidebarProps) => {
 
       {/* Nav items */}
       <NavItem
-        icon={LayoutDashboard}
-        label="Board"
-        active={!chatOpen}
-        onClick={() => {
-          if (chatOpen) onToggleChat();
-        }}
-      />
-      <NavItem
         icon={MessageSquare}
         label="AI Chat"
         active={chatOpen}
@@ -50,7 +42,7 @@ const AppSidebar = ({ onToggleChat, chatOpen }: AppSidebarProps) => {
       {/* Sign out */}
       <button
         onClick={handleSignOut}
-        className="w-11 h-11 rounded-xl flex items-center justify-center text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+        className="w-11 h-11 rounded-xl flex items-center justify-center text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors cursor-pointer"
         title="Sign out"
       >
         <LogOut className="w-5 h-5" />

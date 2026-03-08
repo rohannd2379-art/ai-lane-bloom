@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Send, Bot, User, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/input";
 import { Input } from "@/components/ui/input";
 import ReactMarkdown from "react-markdown";
+import { useAuth } from "@/hooks/useAuth";
+import { useTasks } from "@/hooks/useTasks";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -13,8 +15,10 @@ interface ChatPanelProps {
 }
 
 const ChatPanel = ({ onClose }: ChatPanelProps) => {
+  const { user } = useAuth();
+  const { tasks, refetch } = useTasks(user?.id);
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: "Hey! 👋 I'm your AI task assistant. Ask me anything — I can help you brainstorm tasks, break down projects, or answer questions." },
+    { role: "assistant", content: "Hey! 👋 I'm your AI task assistant. I can see your tasks and help you manage them. Ask me to add, update, or delete tasks!" },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +37,10 @@ const ChatPanel = ({ onClose }: ChatPanelProps) => {
     setIsLoading(true);
 
     let assistantSoFar = "";
-    const allMessages = [...messages.filter(m => m.role !== "assistant" || messages.indexOf(m) !== 0), userMsg];
+    const allMessages = [...messages.filter((m, i) => !(m.role === "assistant" && i === 0)), userMsg];
+
+    // Build task context for the AI
+    const taskSummary = tasks.map(t => `- [${t.status}] "${t.title}"${t.description ? ` (${t.description})` : ""}${t.category ? ` [${t.category}]` : ""} (id: ${t.id})`).join("\n");
 
     try {
       const resp = await fetch(CHAT_URL, {
@@ -42,7 +49,11 @@ const ChatPanel = ({ onClose }: ChatPanelProps) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: allMessages }),
+        body: JSON.stringify({
+          messages: allMessages,
+          tasks: taskSummary,
+          userId: user?.id,
+        }),
       });
 
       if (resp.status === 429) {
@@ -98,6 +109,11 @@ const ChatPanel = ({ onClose }: ChatPanelProps) => {
           }
         }
       }
+
+      // After response, check if AI made task changes and refetch
+      if (assistantSoFar.includes("✅") || assistantSoFar.toLowerCase().includes("done") || assistantSoFar.toLowerCase().includes("created") || assistantSoFar.toLowerCase().includes("updated") || assistantSoFar.toLowerCase().includes("deleted")) {
+        setTimeout(() => refetch(), 1000);
+      }
     } catch (e) {
       console.error(e);
       setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, something went wrong. Please try again." }]);
@@ -115,7 +131,7 @@ const ChatPanel = ({ onClose }: ChatPanelProps) => {
         </div>
         <div className="flex-1">
           <h3 className="font-display font-semibold text-sm">AI Assistant</h3>
-          <p className="text-xs text-muted-foreground">Ask me anything</p>
+          <p className="text-xs text-muted-foreground">Manages your tasks</p>
         </div>
         <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
           <X className="w-5 h-5" />
@@ -178,14 +194,13 @@ const ChatPanel = ({ onClose }: ChatPanelProps) => {
             className="flex-1 h-11 rounded-xl bg-secondary border-0"
             disabled={isLoading}
           />
-          <Button
+          <button
             type="submit"
-            size="icon"
             disabled={isLoading || !input.trim()}
-            className="w-11 h-11 rounded-xl gradient-primary text-primary-foreground shrink-0"
+            className="w-11 h-11 rounded-xl gradient-primary text-primary-foreground shrink-0 flex items-center justify-center disabled:opacity-50"
           >
             <Send className="w-4 h-4" />
-          </Button>
+          </button>
         </form>
       </div>
     </div>
