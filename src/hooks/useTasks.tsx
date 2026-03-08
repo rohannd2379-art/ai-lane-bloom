@@ -30,7 +30,7 @@ export function useTasks(userId: string | undefined) {
     fetchTasks();
   }, [fetchTasks]);
 
-  const addTask = async (title: string, description?: string, category?: string) => {
+  const addTask = async (title: string, description?: string, category?: string, dueDate?: string) => {
     if (!userId) return;
     const maxPos = tasks.length > 0 ? Math.max(...tasks.map((t) => t.position)) + 1 : 0;
     const newTask: TablesInsert<"tasks"> = {
@@ -40,6 +40,7 @@ export function useTasks(userId: string | undefined) {
       status: "todo",
       position: maxPos,
       user_id: userId,
+      due_date: dueDate || null,
     };
 
     const { data, error } = await supabase.from("tasks").insert(newTask).select().single();
@@ -48,6 +49,16 @@ export function useTasks(userId: string | undefined) {
     } else if (data) {
       setTasks((prev) => [...prev, data]);
       toast.success("Task created!");
+    }
+  };
+
+  const updateTask = async (taskId: string, updates: { title: string; description: string; category: string; due_date: string | null }) => {
+    const { error } = await supabase.from("tasks").update(updates).eq("id", taskId);
+    if (error) {
+      toast.error("Failed to update task");
+    } else {
+      setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, ...updates } : t)));
+      toast.success("Task updated!");
     }
   };
 
@@ -77,5 +88,5 @@ export function useTasks(userId: string | undefined) {
     }
   };
 
-  return { tasks, setTasks, loading, addTask, updateTaskStatus, updateTaskPosition, deleteTask, refetch: fetchTasks };
+  return { tasks, setTasks, loading, addTask, updateTask, updateTaskStatus, updateTaskPosition, deleteTask, refetch: fetchTasks };
 }

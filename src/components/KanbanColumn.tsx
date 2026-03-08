@@ -9,6 +9,7 @@ interface KanbanColumnProps {
   title: string;
   tasks: Task[];
   onDelete: (id: string) => void;
+  onEdit: (id: string, updates: { title: string; description: string; category: string; due_date: string | null }) => void;
 }
 
 const columnConfig: Record<string, { icon: any; gradient: string; accentBg: string; dotColor: string }> = {
@@ -32,7 +33,7 @@ const columnConfig: Record<string, { icon: any; gradient: string; accentBg: stri
   },
 };
 
-const KanbanColumn = ({ id, title, tasks, onDelete }: KanbanColumnProps) => {
+const KanbanColumn = ({ id, title, tasks, onDelete, onEdit }: KanbanColumnProps) => {
   const { setNodeRef, isOver } = useDroppable({ id });
   const config = columnConfig[id] || columnConfig.todo;
   const Icon = config.icon;
@@ -63,7 +64,7 @@ const KanbanColumn = ({ id, title, tasks, onDelete }: KanbanColumnProps) => {
       <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
         <div className="space-y-3 px-2 pb-3 min-h-[140px]">
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onDelete={onDelete} columnId={id} />
+            <TaskCard key={task.id} task={task} onDelete={onDelete} onEdit={onEdit} columnId={id} />
           ))}
           {tasks.length === 0 && (
             <div className="flex flex-col items-center justify-center h-28 rounded-xl border-2 border-dashed border-border/40 text-muted-foreground/40 text-sm gap-1">

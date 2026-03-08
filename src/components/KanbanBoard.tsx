@@ -33,7 +33,7 @@ const COLUMNS = ["todo", "in_progress", "complete"] as const;
 
 const KanbanBoard = () => {
   const { user } = useAuth();
-  const { tasks, setTasks, loading, addTask, updateTaskPosition, deleteTask } = useTasks(user?.id);
+  const { tasks, setTasks, loading, addTask, updateTask, updateTaskPosition, deleteTask } = useTasks(user?.id);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [search, setSearch] = useState("");
 
@@ -163,13 +163,13 @@ const KanbanBoard = () => {
           onDragEnd={handleDragEnd}
         >
           <div className="flex gap-5 h-full">
-            <KanbanColumn id="todo" title="To Do" tasks={todoTasks} onDelete={deleteTask} />
-            <KanbanColumn id="in_progress" title="In Progress" tasks={inProgressTasks} onDelete={deleteTask} />
-            <KanbanColumn id="complete" title="Complete" tasks={completeTasks} onDelete={deleteTask} />
+             <KanbanColumn id="todo" title="To Do" tasks={todoTasks} onDelete={deleteTask} onEdit={updateTask} />
+            <KanbanColumn id="in_progress" title="In Progress" tasks={inProgressTasks} onDelete={deleteTask} onEdit={updateTask} />
+            <KanbanColumn id="complete" title="Complete" tasks={completeTasks} onDelete={deleteTask} onEdit={updateTask} />
           </div>
 
           <DragOverlay>
-            {activeTask ? <TaskCard task={activeTask} onDelete={() => {}} /> : null}
+            {activeTask ? <TaskCard task={activeTask} onDelete={() => {}} onEdit={() => {}} /> : null}
           </DragOverlay>
         </DndContext>
       </div>
