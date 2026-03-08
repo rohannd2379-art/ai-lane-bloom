@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -18,6 +18,18 @@ import { useTasks, type Task } from "@/hooks/useTasks";
 import { useAuth } from "@/hooks/useAuth";
 import { Loader2, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import confetti from "canvas-confetti";
+
+const fireConfetti = () => {
+  confetti({
+    particleCount: 80,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ["#10b981", "#34d399", "#6ee7b7", "#a78bfa", "#818cf8"],
+  });
+};
+
+const COLUMNS = ["todo", "in_progress", "complete"] as const;
 
 const KanbanBoard = () => {
   const { user } = useAuth();
@@ -38,6 +50,7 @@ const KanbanBoard = () => {
 
   const todoTasks = filteredTasks.filter((t) => t.status === "todo");
   const inProgressTasks = filteredTasks.filter((t) => t.status === "in_progress");
+  const completeTasks = filteredTasks.filter((t) => t.status === "complete");
 
   const handleDragStart = (event: DragStartEvent) => {
     const task = tasks.find((t) => t.id === event.active.id);
@@ -55,7 +68,7 @@ const KanbanBoard = () => {
     if (!activeTask) return;
 
     // Check if dropping over a column
-    if (overId === "todo" || overId === "in_progress") {
+    if (COLUMNS.includes(overId as any)) {
       if (activeTask.status !== overId) {
         setTasks((prev) =>
           prev.map((t) => (t.id === activeId ? { ...t, status: overId } : t))
@@ -75,7 +88,7 @@ const KanbanBoard = () => {
     }
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     setActiveTask(null);
     if (!over) return;
@@ -83,6 +96,11 @@ const KanbanBoard = () => {
     const activeId = active.id as string;
     const task = tasks.find((t) => t.id === activeId);
     if (!task) return;
+
+    // Fire confetti when moved to complete
+    if (task.status === "complete") {
+      fireConfetti();
+    }
 
     // Get tasks in the target column
     const columnTasks = tasks.filter((t) => t.status === task.status);
@@ -102,7 +120,7 @@ const KanbanBoard = () => {
     } else {
       updateTaskPosition(activeId, task.position, task.status);
     }
-  };
+  }, [tasks, setTasks, updateTaskPosition]);
 
   if (loading) {
     return (
@@ -144,9 +162,10 @@ const KanbanBoard = () => {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <div className="flex gap-6 h-full">
+          <div className="flex gap-5 h-full">
             <KanbanColumn id="todo" title="To Do" tasks={todoTasks} onDelete={deleteTask} />
             <KanbanColumn id="in_progress" title="In Progress" tasks={inProgressTasks} onDelete={deleteTask} />
+            <KanbanColumn id="complete" title="Complete" tasks={completeTasks} onDelete={deleteTask} />
           </div>
 
           <DragOverlay>
