@@ -26,7 +26,7 @@ serve(async (req) => {
           {
             role: "system",
             content:
-              "You are a helpful task management AI assistant embedded in a Kanban board app called AI Lane. Help users brainstorm tasks, break down projects into actionable items, prioritize work, and answer questions about productivity. Keep responses concise, actionable, and friendly. Use markdown formatting when helpful.",
+              "You are a helpful task management AI assistant embedded in a Kanban board app called Task Flow. Help users brainstorm tasks, break down projects into actionable items, prioritize work, and answer questions about productivity. Keep responses concise, actionable, and friendly. Use markdown formatting when helpful.",
           },
           ...messages,
         ],

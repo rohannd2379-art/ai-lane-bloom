@@ -67,7 +67,7 @@ const Auth = () => {
             </div>
           </div>
           <h1 className="text-5xl font-display font-bold text-primary-foreground mb-4">
-            AI Lane
+            Task Flow
           </h1>
           <p className="text-xl text-primary-foreground/80 max-w-md">
             Your intelligent Kanban board with AI-powered task management
@@ -86,7 +86,7 @@ const Auth = () => {
             <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
               <LayoutDashboard className="w-5 h-5 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-display font-bold">AI Lane</h1>
+            <h1 className="text-2xl font-display font-bold">Task Flow</h1>
           </div>
 
           <h2 className="text-3xl font-display font-bold mb-2">
