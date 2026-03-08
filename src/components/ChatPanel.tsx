@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Send, Bot, User, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/input";
 import { Input } from "@/components/ui/input";
 import ReactMarkdown from "react-markdown";
 import { useAuth } from "@/hooks/useAuth";
