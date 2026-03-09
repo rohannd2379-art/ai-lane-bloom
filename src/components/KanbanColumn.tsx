@@ -12,24 +12,30 @@ interface KanbanColumnProps {
   onEdit: (id: string, updates: { title: string; description: string; category: string; due_date: string | null }) => void;
 }
 
-const columnConfig: Record<string, { icon: any; gradient: string; accentBg: string; dotColor: string }> = {
+const columnConfig: Record<string, { icon: any; gradient: string; accentBg: string; dotColor: string; borderAccent: string; bgTint: string }> = {
   todo: {
     icon: Circle,
-    gradient: "from-info to-blue-400",
-    accentBg: "bg-blue-50 dark:bg-blue-950/30",
-    dotColor: "bg-info",
+    gradient: "from-yellow-400 to-amber-300",
+    accentBg: "bg-yellow-50 dark:bg-yellow-950/30",
+    dotColor: "bg-yellow-400",
+    borderAccent: "border-yellow-300/50 dark:border-yellow-500/20",
+    bgTint: "bg-gradient-to-b from-yellow-50/60 to-transparent dark:from-yellow-950/10 dark:to-transparent",
   },
   in_progress: {
     icon: Clock,
-    gradient: "from-amber-400 to-orange-400",
-    accentBg: "bg-amber-50 dark:bg-amber-950/30",
-    dotColor: "bg-warning",
+    gradient: "from-orange-400 to-red-400",
+    accentBg: "bg-orange-50 dark:bg-orange-950/30",
+    dotColor: "bg-orange-400",
+    borderAccent: "border-orange-300/50 dark:border-orange-500/20",
+    bgTint: "bg-gradient-to-b from-orange-50/60 to-transparent dark:from-orange-950/10 dark:to-transparent",
   },
   complete: {
     icon: CheckCircle2,
-    gradient: "from-emerald-400 to-green-500",
+    gradient: "from-emerald-400 to-teal-400",
     accentBg: "bg-emerald-50 dark:bg-emerald-950/30",
-    dotColor: "bg-success",
+    dotColor: "bg-emerald-400",
+    borderAccent: "border-emerald-300/50 dark:border-emerald-500/20",
+    bgTint: "bg-gradient-to-b from-emerald-50/60 to-transparent dark:from-emerald-950/10 dark:to-transparent",
   },
 };
 
