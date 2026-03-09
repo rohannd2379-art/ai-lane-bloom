@@ -47,10 +47,10 @@ const KanbanColumn = ({ id, title, tasks, onDelete, onEdit }: KanbanColumnProps)
   return (
     <div
       ref={setNodeRef}
-      className={`flex-1 min-w-[300px] max-w-[420px] rounded-2xl transition-all duration-300 ${
+      className={`flex-1 min-w-[300px] max-w-[420px] rounded-2xl border ${config.borderAccent} ${config.bgTint} transition-all duration-300 ${
         isOver
-          ? "ring-2 ring-primary/30 bg-primary/5 scale-[1.01]"
-          : ""
+          ? "ring-2 ring-primary/30 scale-[1.01] shadow-lg"
+          : "shadow-sm"
       }`}
     >
       {/* Column header */}
